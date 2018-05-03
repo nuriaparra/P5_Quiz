@@ -1,19 +1,10 @@
 const Sequelize = require('sequelize');
+const path = require('path');
 
 const options = ({logging : false, operatorsAliases:false});
 const sequelize = new Sequelize("sqlite:quizzes.sqlite", options);
 
-sequelize.define('quiz', {
-    question: {
-        type: Sequelize.STRING,
-        unique: {msg: "Ya existe esta pregunta."},
-        validate: {notEmpty: {msg: "La pregunta no puede estar vacía."}}
-    },
-    answer: {
-        type: Sequelize.STRING,
-        validate: {notEmpty: {msg: "La respuesta no puede estar vacía."}}
-    }
-});
+sequelize.import(path.join(__dirname, 'quiz'));
 
 sequelize.sync()
     .then(() => sequelize.models.quiz.count())
@@ -27,8 +18,10 @@ sequelize.sync()
             ]);
         }
     })
+    .then(()=>console.log('Ole que te ole con tu BBDD'))
     .catch(error => {
-        console.log(error);
+        console.log("eoeoeo", error);
+        process.exit(1);
     });
 
 module.exports = sequelize;
